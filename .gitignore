@@ -4,6 +4,14 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+shareDoor/shareDoor/Web.config
+shareDoor/shareDoor/Data/CloudinaryService.cs
+shareDoor/Web.config
+shareDoor/Data/CloudinaryService.cs
+shareDoor/shareDoor/shareDoor/Web.config
+shareDoor/shareDoor/shareDoor/Data/CloudinaryService.cs
+
+
 *.suo
 *.user
 *.userosscache
