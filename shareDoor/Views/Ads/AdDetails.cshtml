@@ -1,0 +1,212 @@
+﻿@model shareDoor.Models.House
+@{
+    ViewBag.Title = "AdDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-4 text-center">
+                    @if (Model.User.UserPhotos.Any(y => y.IsMain == true))
+                    {
+                        <img class="" src="@Model.User.UserPhotos.FirstOrDefault(y=>y.IsMain == true).Url" height="250px" width="90%" id="profileImg"/>
+                    }
+                    else
+                    {
+                        <img class="" src="https://res.cloudinary.com/dmizwj8w8/image/upload/v1556883161/wheckiv5kur0dsjnxynr.jpg" height="250px" width="90%" />
+                    }
+                    <h5 class="text-muted">
+                        <span class="text-warning">Περιγραφή: </span>
+                        <p class="text-white">
+                            @Model.User.UserDescription
+                        </p>
+                    </h5>
+                </div>
+                <div class="col-4">
+                    <p>
+                        <strong>Ψευδώνυμο:</strong> @Model.User.NickName
+                    </p>
+                    <p>
+                        <strong>Email:</strong> @Model.User.Email
+                    </p>
+                    <p>
+                        <strong>Φύλο: </strong> @shareDoor.Helpers.TextManager.GetGender(Model.User.Gender)
+                    </p>
+                    <p>
+                        <strong>Καπνιστής: </strong> @shareDoor.Helpers.TextManager.GetSmoker(Model.User.Smoker)
+                    </p>
+                    <p>
+                        <strong>Κατοικίδια: </strong>@shareDoor.Helpers.TextManager.GetPet(Model.User.Pets)
+                    </p>
+                    <p>
+
+                        <strong>Ηλικία: </strong> @(shareDoor.Helpers.TextManager.CalculateAge(Model.User.DateOfBirth.Value) == -1 ? "Άγνωστο" : shareDoor.Helpers.TextManager.CalculateAge(Model.User.DateOfBirth.Value).ToString())
+                    </p>
+          
+
+                </div>
+                <div class="col-4" style="max-height:30vh; overflow-y:auto">
+                    <div class="row">
+                        @foreach (var img in Model.User.UserPhotos)
+                        {
+                            <div class="col-4 mb-2">
+                                <img src="@img.Url" class="img-fluid rounded-circle profileImages" style="height: 80px; cursor: pointer"  data-img-url="@img.Url" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <div class="card border-primary mb-3">
+        <div class="card-header">
+            Πληροφορίες Αγγελίας
+            <span class="float-right">
+
+                <strong class="text-black-50">Ημ/νία καταχώρησης: </strong>
+                @Model.Created
+
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6" style="border-right:1px solid black">
+                    @if (Model.HousePhotos.Any(y => y.IsMain == true))
+                    {
+                        <img style="height: 350px; width: 100%;" src="@Model.HousePhotos.FirstOrDefault(y=>y.IsMain==true).Url" alt="Card image" id="imgValue">
+                    }
+                    else
+                    {
+                        <img style="height: 350px; width: 100%;" src="https://cdn.tutsplus.com/psd/uploads/legacy/325_House_Icon/43.jpg" alt="Card image">
+                    }
+
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var img in Model.HousePhotos)
+                            {
+                                <div class="col-4">
+
+                                    <img class="mb-2 img-fluid imgChange" src="@img.Url" style="height:80px; cursor:pointer" />
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 details position-relative">
+                    <div class="row">
+                        <div class="col-6" style="border-right:1px solid grey">
+                            <p>
+                                <strong>Νομός: </strong>
+                                @Model.State.Name
+                            </p>
+                            <p>
+                                <strong>Περιοχή: </strong>
+                                @Model.Area.Name
+                            </p>
+                            <p>
+                                <strong>Οδός: </strong>
+                                @Model.Address
+                            </p>
+                            <p>
+                                <strong>Τ.Κ.: </strong>
+                                @Model.PostalCode
+                            </p>
+                            <p>
+                                <strong>Όροφος: </strong>
+                                @Model.Level
+                            </p>
+                            <p>
+                                <strong>Δωμάτια: </strong>
+                                @Model.TotalRooms
+                            </p>
+
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                <strong>Μηνιαίο κόστος: </strong>
+                                @Model.RentCost
+                            </p>
+                            <p>
+                                <strong>Τετραγωνικά μέτρα: </strong>
+                                @Model.SquareMeters
+                            </p>
+
+                            <p>
+                                <strong>Κάπνισμα: </strong>
+                                @shareDoor.Helpers.TextManager.GetSmoker(@Model.Smoker)
+                                
+                            </p>
+                            <p>
+                                <strong>Κατοικίδια: </strong>
+                                @shareDoor.Helpers.TextManager.GetPet(@Model.Pets)
+                            </p>
+                            <p>
+                                <strong>Επιθυμητό Φύλο: </strong>
+                                @shareDoor.Helpers.TextManager.GetGender(@Model.Gender)
+                            </p>
+                            <p>
+                                <strong>Ημ/νία Κατασκευής: </strong>
+                                @Model.YearConstruct
+                            </p>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class=" text-left p-0 position-relative">
+                        <h5 class="text-muted position-absolute" style="top: 130px; left:17%">Πάτα εδώ να δείς το σπίτι στον χάρτη!</h5>
+                        <a href=@shareDoor.Helpers.TextManager.MapUrl(Model.Address,Model.PostalCode, Model.Area.Name) target="_blank"> <img class="" style="z-index:50" src="~/Images/mapStreet.jpg" height="200px" width="100%" /></a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+@section styles{
+    <style>
+        strong {
+            color: yellow;
+        }
+
+        .details strong {
+            color: black !important;
+        }
+    </style>
+
+}
+
+@section scripts{
+    <script  type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            $(document).on("click",
+                ".imgChange",
+                function() {
+                    var temp = $(this).attr("src");
+                    $('#imgValue').attr('src', temp);
+
+                });
+
+
+            $(document).on('click',
+                '.profileImages',
+                function() {
+                    var temp = $(this).attr("data-img-url");
+                    $('#profileImg').attr('src', temp);
+                });
+
+        })
+    </script>
+}

@@ -1,0 +1,176 @@
+﻿body {
+    /*padding-top: 120px;*/
+    padding-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    height:100vh;
+}
+
+@media screen and (max-height: 768px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+#chatTextArea {
+    resize: none;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.field-validation-error {
+    color: red !important;
+    font-size: 12px;
+}
+
+
+
+
+#main-input {
+    z-index: 1;
+    max-width: 60%;
+    height: 60px;
+}
+
+.input-group {
+    margin: 0 auto;
+    width: 50%;
+    display: -webkit-box;
+}
+
+.navbar {
+    /*background: rgba(255, 255, 255, 0.11) !important;*/
+    /*background-image: linear-gradient(to right, #ffffff, #9ca2c1,#265456);*/
+    background: linear-gradient(#124845, #077972) !important;
+    border: none;
+    border-bottom: 2px solid;
+}
+
+.navbar-nav .nav-item > a {
+    color: white !important;
+}
+
+.navbar-right > li > a:hover {
+    color: #f9ff05 !important;
+    text-decoration: none;
+}
+
+.navbar-right > li > a {
+    color: white !important;
+    text-decoration: none;
+}
+
+.navbar-right > li > a {
+    cursor: pointer;
+    transition: all;
+    transition-duration: 0.3s;
+}
+
+.navbar-brand > img {
+    height: 60px;
+}
+
+.btn-primary {
+    background: linear-gradient( #124845, #077972) !important;
+    border-color: #0c5f0f !important;
+}
+
+.bg-primary {
+    background: linear-gradient( #124845, #077972) !important;
+}
+
+.btn-outline-primary {
+    background: white;
+    border-color: #077972 !important;
+    color: #0c5f0f;
+}
+
+    .btn-outline-primary:hover {
+        background: linear-gradient( #124845, #077972) !important;
+        border-color: #077972 !important;
+        color: white;
+    }
+
+    .btn-outline-primary:focus, .btn-outline-primary.focus {
+        box-shadow: 0px 0px 6px #077972 !important;
+        
+    }
+.btn-outline-danger:focus, .btn-outline-danger.focus {
+    box-shadow: 0px 0px 6px red !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(#077972,#124845) !important;
+    border-color: #f9ff05 !important;
+}
+
+
+.form-control:focus {
+    border-color: green !important;
+    box-shadow: none;
+}
+
+@media screen and (max-height: 768px) {
+    .navbar-brand > img {
+        height: 45px;
+    }
+}
+
+.btn-primary:hover {
+    color: #f9ff05 !important;
+}
+
+.btn-outline-primary:hover {
+    color: #f9ff05 !important;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgb(14, 86, 82);
+    box-shadow: 0 0 0 0.2rem rgb(9, 108, 102);
+}
+
+
+
+.btn-primary:focus, .btn-primary.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgb(14, 88, 83);
+    box-shadow: 0 0 0 0.2rem rgb(10, 105, 99);
+}
+
+.logins:hover {
+    box-shadow: 1px 19px 46px -11px rgba(0,0,0,0.75);
+}
+/*Admin bootstrap*/
+
+.admin-links>li>a:hover{
+    color:yellow!important;
+    margin-left:5px;
+}
+
+.admin-links > li > a {
+    transition: all;
+    transition-duration: 0.3s;
+}
+
+.mainNav {
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}

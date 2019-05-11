@@ -1,0 +1,163 @@
+﻿@model shareDoor.ViewModels.SearchViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+<div id="main-background">
+    <div class="text-center" id="main-header">
+        <div class="main container w-50  mt-3">
+            @using (Html.BeginForm("AdsList", "Ads", FormMethod.Post))
+            {
+                <h1 class="text-white font-weight-bold">Κάνε την κίνησή σου</h1>
+                <h3 class="text-white">Βρες συγκάτοικο ή σπίτι για να μείνεις!</h3>
+
+                <div class="input-group mb-3 shadow w-100">
+                    <i class="fas fa-search-location" id="icon"></i>
+                    @*<span id="input-text">Που θες να μείνεις;</span>*@
+                    @Html.TextBoxFor(m => m.SearchText, new { @class = "form-control", id = "main-input", placeholder = "Που θες να μείνεις;" })
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" id="searchButton">Αναζήτηση</button>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                @Html.Partial("_LoginForm")
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section styles {
+    <style>
+
+        #main-background {
+            background-image: url("/Images/background123456.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            z-index: 0;
+            height: 100vh;
+        }
+
+        .main {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 35%;
+
+            margin: auto;
+        }
+
+
+        .fas {
+            position: absolute;
+            z-index: 10;
+            font-size: 30px;
+            top: 15px;
+            right: 115px;
+            opacity: 0.4;
+        }
+
+        /*span {
+            position: absolute;
+            z-index: 11;
+            left: 40px;
+            top: 20px;
+        }*/
+
+        #main-input {
+            border-radius: 5px;
+        }
+
+        #main-input {
+            border-radius: 5px;
+        }
+    </style>
+}
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+
+            const areas = [];
+
+            $('#main-input').autocomplete({
+                source: areas,
+                minLength: 2,
+            })
+
+            $('#main-input').on('focus', function () {
+                $('#input-text').html('')
+                $('#icon').hide();
+            })
+
+            $('#main-input').on('blur', function () {
+                if (!$('#main-input').val() == "") {
+                    $('#input-text').html('')
+                    $('#icon').hide();
+                } else {
+                    $('#input-text').html('Που θες να μείνεις;')
+                    $('#icon').show();
+                }
+            })
+
+            $('#searchButton').click(function () {
+                $('#main-input').html('')
+
+            });
+
+
+
+            $.ajax({
+                url: "/api/areas",
+                method: 'GET'
+            }).done(function (res) {
+                  var string = ``
+                $.each(res, function (index, value) {
+                    string = `${value.Name}, ${value.State.Name}`
+                    areas.push(string);
+                    string = ``
+                });
+                console.log(areas)
+            }).fail(function () {
+
+            })
+            
+            //$.ajax({
+            //    method: 'get',
+            //    url: '/api/areas',
+            //    success: function (res) {
+            //        console.log(res);
+
+            //    },
+            //    error: function (e) {
+
+            //    }
+
+            //});
+
+
+        })
+
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+
+       
+   
+
+    </script>
+}

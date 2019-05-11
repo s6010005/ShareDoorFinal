@@ -1,0 +1,148 @@
+﻿@model shareDoor.ViewModels.RoomateAdFormViewModel
+@{
+    ViewBag.Title = "RoomateAd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("InsertRoomateAd", "Ads", FormMethod.Post, new { enctype = "multipart/form-data", id = "insertAd" }))
+{
+    <div class="container" style="">
+        <h2>Εισαγωγή Αγγελίας</h2>
+        <div class="alert alert-success p-0" role="alert">Tα πεδία με <span style="font-size: 18px;">*</span> είναι <strong>υποχρεωτικά.</strong> </div>
+
+        <hr />
+        <button class="btn btn-primary mb-2">Αποθήκευση</button>
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-3 justify-content-center col-lg-3">
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.StateId, "Νομός *")
+                    @Html.DropDownListFor(m => m.StateId, new SelectList(Model.States, "Id", "Name"), "", new { @class = "form-control get-states" })
+                    @Html.ValidationMessageFor(m => m.StateId)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AreaId, "Περιοχή *")
+                    @Html.DropDownListFor(m => m.AreaId, new SelectList(Model.Areas, "Id", "Name"), "", new { @class = "form-control get-areas" })
+                    @Html.ValidationMessageFor(m => m.AreaId)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.RendCost, "Διαθέσιμο ποσό *" )
+                    @Html.TextBoxFor(m => m.RendCost, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RendCost)
+                </div>
+
+                <div class="row">
+                    <div class="ml-3">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Smoker, "Αναζητώ Καπνιστή/ρια *")
+                            <div class="custom-radio">
+                                <i class="fas fa-smoking"></i>
+                                @Html.RadioButtonFor(m => m.Smoker, "Yes", new { @class = "" })
+                                <i class="fas fa-ban ml-2 text-danger"></i>
+                                @Html.RadioButtonFor(m => m.Smoker, "No", new { @class = "" })
+                                <i class="fas fa-question ml-2 text-muted"></i>
+                                @Html.RadioButtonFor(m => m.Smoker, "Default", new { @class = "", @checked = "" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Pets, "Επιτρέπονται Κατοικίδιο/α *")
+                            <div class="custom-radio">
+
+                                <i class="fas fa-paw"></i>
+                                @Html.RadioButtonFor(m => m.Pets, "Yes", new { @class = "" })
+                                <i class="fas fa-ban ml-2 text-danger"></i>
+                                @Html.RadioButtonFor(m => m.Pets, "No", new { @class = "" })
+                                <i class="fas fa-question ml-2 text-muted"></i>
+                                @Html.RadioButtonFor(m => m.Pets, "Default", new { @class = "", @checked = "" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Gender, "Επιθυμητό φύλο *")
+                            <div class="custom-radio">
+                                <i class="fas fa-male"></i>
+                                @Html.RadioButtonFor(m => m.Gender, "Male", new { @class = "" })
+                                <i class="fas fa-female ml-2"></i>
+                                @Html.RadioButtonFor(m => m.Gender, "Female", new { @class = "" })
+                                <i class="fas fa-question text-muted ml-2"></i>
+                                @Html.RadioButtonFor(m => m.Gender, "Other", new { @class = "", @checked = "" })
+                                @Html.ValidationMessageFor(m => m.Gender)
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Description)
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "6", cols = "50" })
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(".get-states").change(function (e) {
+                var Id = $(e.target).val()
+
+                $.ajax({
+                    url: "/api/ads/" + Id,
+                })
+                    .done(function (res) {
+                        console.log(res);
+                        $(".get-areas").empty();
+                        for (var i = 0; i < res.length; i++) {
+                            $(".get-areas").append(`<option value='${res[i].Id}'>` + res[i].Name + "</option>");
+                        }
+                    })
+                    .fail(function () {
+
+                    })
+            })
+        });
+    </script>
+}
+
+@section styles{
+    <style>
+        .form-group > label {
+            font-weight: bold;
+        }
+
+        .swal-button {
+            background-color: #073a37;
+            border-color: none;
+        }
+
+        .swal-button:not([disabled]):hover {
+            background-color: #05433f;
+            border-color: none;
+            color: yellow;
+        }
+
+        i {
+            font-size: 18px;
+        }
+
+        .fa-male {
+            color: blue;
+        }
+
+        .fa-female {
+            color: #f53ebe;
+        }
+    </style>
+}

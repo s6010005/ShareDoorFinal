@@ -1,0 +1,92 @@
+﻿@using shareDoor.Models
+@model LoginViewModel
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center">
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "margin-top:300px" }))
+        {
+
+            @Html.AntiForgeryToken()
+            <img src="~/Images/Screenshot_1.png" style="        height: 100px;" />
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "text-white" })
+
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "text-white" })
+
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+
+                <div class="checkbox">
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe, new { @class = "text-white" })
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <button type="submit" class="btn btn-warning btn-block">Είσοδος</button>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <style>
+        body {
+            background-image: linear-gradient(#124845, #077972) !important;
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        .form-horizontal {
+            margin: 0 auto;
+        }
+
+        input, select, textarea {
+            max-width: 100%;
+        }
+
+        .btn-warning {
+            color: #0d5b57;
+            background-color: #e2e605;
+            border-color: #ddf913;
+        }
+
+            .btn-warning:hover {
+                color: #fff;
+                background-color: #ecaa1b00;
+                border-color: #f7ff06;
+            }
+    </style>
+
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+﻿@model shareDoor.Models.House
+@{
+    ViewBag.Title = "RoomateAdDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container mt-3">
+    <div class="card border-primary mb-3">
+        <div class="card-header">
+            Πληροφορίες Αγγελίας
+            <span class="float-right">
+
+                <strong class="text-black-50">Ημ/νία καταχώρησης: </strong>
+                @Model.Created
+
+            </span>
+        </div>
+        <div class="card-body">
+            
+            <div class="row">
+                <div class="col-4 text-center">
+                    @if (Model.User.UserPhotos.Any(y => y.IsMain == true))
+                    {
+                        <img class="" src="@Model.User.UserPhotos.FirstOrDefault(y=>y.IsMain == true).Url" height="300px" width="90%" id="profileImgNoHouse" />
+                    }
+                    else
+                    {
+                        <img class="" src="https://res.cloudinary.com/dmizwj8w8/image/upload/v1556883161/wheckiv5kur0dsjnxynr.jpg" height="300px" width="90%" />
+                    }
+                    <h3 class="text-muted mt-3">Περιγραφή:</h3>
+                    <p>
+                        @Model.Description
+                    </p>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6" style="border-right: 1px solid grey;">
+                            <p>
+                                <strong>Ψευδώνυμο:</strong> @Model.User.NickName
+                            </p>
+                            <p>
+                                <strong>Email:</strong> @Model.User.Email
+                            </p>
+                            <p>
+                                <strong>Φύλο: </strong> @shareDoor.Helpers.TextManager.GetGender(Model.User.Gender)
+                            </p>
+                            <p>
+                                <strong>Καπνιστής: </strong> @shareDoor.Helpers.TextManager.GetSmoker(Model.User.Smoker)
+                            </p>
+                            <p>
+                                <strong>Κατοικίδια: </strong>@shareDoor.Helpers.TextManager.GetPet(Model.User.Pets)
+                            </p>
+                            <p>
+                                <strong>Ηλικία: </strong> @(shareDoor.Helpers.TextManager.CalculateAge(Model.User.DateOfBirth.Value) == -1 ? "Άγνωστο" : shareDoor.Helpers.TextManager.CalculateAge(Model.User.DateOfBirth.Value).ToString())
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p><strong>Νομός: </strong>  @Model.State.Name </p>
+                            <p><strong>Περιοχή: </strong>  @Model.Area.Name </p>
+                            <p><strong>Επιθυμητό Φύλο: </strong> @shareDoor.Helpers.TextManager.GetGender(Model.Gender) </p>
+                            <p><strong>Αναζητώ Καπνιστή/ρια: </strong> @shareDoor.Helpers.TextManager.GetSmoker(Model.Smoker) </p>
+                            <p><strong>Επιτρέπονται τα Κατοικίδια: </strong> @shareDoor.Helpers.TextManager.GetPet(Model.Pets) </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-2" style="max-height:30vh; overflow-y:auto">
+                    <div class="row">
+                        @foreach (var img in Model.User.UserPhotos)
+                        {
+                            <div class="col-10 mb-2">
+                                <img src="@img.Url" class="img-fluid rounded-circle profileImagesNoHouse" style="height:120px;  cursor: pointer;" data-img-url="@img.Url" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+    @section scripts{
+        <script type="text/javascript">
+
+
+            $(document).ready(function () {
+
+                $(document).on("click",
+                    ".imgChange",
+                    function () {
+                        var temp = $(this).attr("src");
+                        $('#imgValue').attr('src', temp);
+
+                    });
+
+
+                $(document).on('click',
+                    '.profileImagesNoHouse',
+                    function () {
+                        var temp = $(this).attr("data-img-url");
+                        $('#profileImgNoHouse').attr('src', temp);
+                    });
+
+            })
+        </script>
+    }

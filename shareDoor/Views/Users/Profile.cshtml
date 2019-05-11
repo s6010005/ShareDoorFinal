@@ -1,0 +1,647 @@
+﻿@model shareDoor.ViewModels.UserProfileViewModel
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Προφίλ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container position-relative">
+
+    <div class="justify-content-center row mt-5 ">
+
+        <div class="col-md-4 col-sm-4 " style="height:fit-content;border: 1px solid #08716a8a;
+    border-radius: 5px;" id="mainProfile">
+
+            @if (Model.User.UserPhotos.Count > 0)
+            {
+                <h2 class="text-center">Προφίλ</h2>
+                <div style="border:1px solid #08716a8a" class="mt-5">
+                    <img src="@Model.User.UserPhotos.Single(x=>x.IsMain== true).Url" class="img-fluid profile p-1" />
+                </div>
+
+            }
+            else
+            {
+                <img src="https://lightwidget.com/widgets/empty-photo.jpg" class="img-fluid mt-5" />
+            }
+
+            <div class="mt-3" style="font-size:16px">
+                <p>
+                    <strong>
+                        Όνομα χρήστη:
+                    </strong>
+                    @Model.User.NickName
+                </p>
+                <p>
+                    <strong>
+                        Γένος:
+                    </strong>
+                    @shareDoor.Helpers.TextManager.GetGender(Model.User.Gender)
+                </p>
+                <p>
+                    <strong>
+                        Κινητό:
+                    </strong>
+                    @Model.User.PhoneNumber
+                </p>
+                <p>
+                    <strong>
+                        Email:
+                    </strong>
+                    @Model.User.Email
+                </p>
+                <p>
+                    
+                    @if (@Model.Age == -1)
+                    {
+                        <strong>
+                            Ηλικία:
+                        </strong>
+                        <span>Δ/Α</span>
+
+                    }
+                    else
+                    {
+                        <strong>
+                            Ηλικία:
+                        </strong>
+                        <span>@Model.Age</span>
+                    }
+
+                
+
+                </p>
+                <p>
+                    <strong>
+                        Χρήστης από:
+                    </strong>
+                    @Model.User.Created.ToShortDateString()
+                </p>
+                <p>
+                    <strong>
+                        Συνδρομή:
+                    </strong>
+                    @Model.textManager.GetRole(Model.User.Id)
+
+                </p>
+            </div>
+
+
+
+        </div>
+
+        <div class="col-md-8 col-sm-8">
+
+            <ul class="nav nav-tabs text-dark">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#ads">Οι αγγελίες μου</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#messages">Μηνύματα</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#photos">Φωτογραφίες</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#profile">Προφίλ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#premium">Αγορά συνδρομής</a>
+                </li>
+
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active show mt-4" id="ads">
+
+                    @foreach (var house in Model.User.Houses)
+                    {
+                        if (house.Address == "0")
+                        {
+                            <div class="card border-secondary mb-3 container-fluid mt-3 p-0 shadow" id="@house.Id">
+                                <div class="card-header">
+                                    @house.Area.Name, @house.State.Name
+                                    <p class="card-text float-right"> <strong>Μηνιαίο Κόστος:</strong> @house.RentCost &euro;</p>
+                                </div>
+                                <div class="card-body row">
+                                    <div class="col-4">
+                                        @if (house.User.UserPhotos.Any(x => x.IsMain == true))
+                                        {
+                                            <img src="@house.User.UserPhotos.FirstOrDefault(y => y.IsMain == true).Url" class="card-img-top" style="height: 150px" />
+                                        }
+                                        else
+                                        {
+                                            <img src="http://clipart-library.com/images/8i6oer5KT.png" class="card-img-top" />
+                                        }
+
+                                        @*<img src="http://clipart-library.com/images/8i6oer5KT.png" class="card-img-top"/>*@
+
+                                    </div>
+                                    <div class="col-8">
+                                        @switch (house.IsConfirmed)
+                                        {
+                                            case shareDoor.Models.Confirmation.Cancel:
+                                                <span class="badge badge-danger float-right">Ακυρώθηκε</span>
+                                                break;
+                                            case shareDoor.Models.Confirmation.Pending:
+                                                <span class="badge badge-warning float-right">Εκκρεμεί</span>
+                                                break;
+                                            case shareDoor.Models.Confirmation.Pass:
+                                                <span class="badge badge-success float-right">Εγκρίθηκε</span>
+                                                break;
+                                        }
+
+                                        <h5 class="card-title">Ζητείται: </h5>
+                                        <hr />
+                                        <span class="float-right"><button class="btn btn-danger deleteHouseImgButton" data-house-id="@house.Id">Διαγραφή</button></span>
+                                        <span class="float-right"><a class="btn btn-primary mr-1" href="@Url.Action("EditAd","Ads", new {Id= house.Id})">Επεξεργασία</a></span>
+                                        <p class="card-text"><strong>Καπνιστής:</strong> @shareDoor.Helpers.TextManager.GetSmoker(house.Smoker)</p>
+                                        <p class="card-text"><strong>Κατοικίδια:</strong> @shareDoor.Helpers.TextManager.GetSmoker(house.Pets)</p>
+                                        <p class="card-text"><strong>Φύλο:</strong> @shareDoor.Helpers.TextManager.GetGender(house.Gender)</p>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="card border-secondary mb-3 container-fluid mt-3 p-0 shadow" id="@house.Id">
+                                <div class="card-header">
+                                    @house.Area.Name, @house.State.Name
+                                    <p class="card-text float-right"> <strong>Μηνιαίο Κόστος:</strong> @house.RentCost &euro;</p>
+                                </div>
+                                <div class="card-body row">
+                                    <div class="col-4">
+
+                                        @if (house.HousePhotos.Any(x => x.IsMain == true))
+                                        {
+                                            <img src="@house.HousePhotos.Single(x=>x.IsMain == true).Url" class="card-img-top" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://cdn.tutsplus.com/psd/uploads/legacy/325_House_Icon/43.jpg" class="card-img-top" />
+                                        }
+                                    </div>
+                                    <div class="col-8">
+                                        @switch (house.IsConfirmed)
+                                        {
+                                            case shareDoor.Models.Confirmation.Cancel:
+                                                <span class="badge badge-danger float-right">Ακυρώθηκε</span>
+                                                break;
+                                            case shareDoor.Models.Confirmation.Pending:
+                                                <span class="badge badge-warning float-right">Εκκρεμεί</span>
+                                                break;
+                                            case shareDoor.Models.Confirmation.Pass:
+                                                <span class="badge badge-success float-right">Εγκρίθηκε</span>
+                                                break;
+                                        }
+
+                                        <h5 class="card-title">@house.Address, τ.κ. @house.PostalCode</h5>
+                                        <hr />
+                                        <span class="float-right"><button class="btn btn-danger deleteHouseImgButton" data-house-id="@house.Id">Διαγραφή</button></span>
+                                        <span class="float-right"><a class="btn btn-primary mr-1" href="@Url.Action("EditAd","Ads", new {Id= house.Id})">Επεξεργασία</a></span>
+                                        <p class="card-text"><strong>Δωμάτια:</strong> @house.TotalRooms</p>
+                                        <p class="card-text"><strong>Όροφος:</strong> @house.Level</p>
+                                        <p class="card-text"><strong>Τετραγωνικά μέτρα:</strong> @house.SquareMeters</p>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+
+                    }
+                </div>
+                <div class="tab-pane fade mt-4" id="messages">
+                    <div style="height:150px; overflow:auto">
+                        <div class="accordion" id="accordionExample">
+
+                            @foreach (var message in Model.Messages)
+                            {
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#@message.Sender.NickName" aria-expanded="true" aria-controls="collapseOne">
+                                                <strong>Ψευδώνυμο: </strong> @message.Sender.NickName
+                                                <strong>Θέμα: </strong> @message.Subject
+                                                <strong>Στάλθηκε: </strong> @message.Created
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="@message.Sender.NickName" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            @message.Message
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="">
+                            <p>
+                                <a class="btn btn-outline-primary btn-sm " data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" id="liveChat">
+                                    Δημιουργία Μηνύματος
+                                    <img src="https://image.flaticon.com/icons/svg/174/174247.svg" height="30px" />
+                                </a>
+                            </p>
+                            @Html.Partial("_Chat")
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab-pane fade mt-4" id="photos">
+                    <div class="row" id="totalImages">
+                        @foreach (var photo in Model.User.UserPhotos)
+                        {
+                            <div class="col-4 text-center" id="@photo.Id">
+                                <img class="img-fluid mb-2" src="@photo.Url" style="height: 180px;" width="100%" />
+                                <button class="btn btn-outline-primary mainButton "
+                                        data-photo-id="@photo.Id"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Κύρια φωτογραφία">
+                                    <i class="fas fa-portrait"></i>
+                                </button>
+                                <button class="btn btn-outline-danger deleteButton"
+                                        data-toggle="tooltip"
+                                        data-photo-id="@photo.Id"
+                                        data-placement="top"
+                                        title="Διαγραφή φωτογραφίας">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="tab-pane fade mt-3" id="profile">
+                    <button class="btn btn-success" id="userSave">Αποθήκευση</button>
+                    <button class="btn btn-danger">Διαγραφή λογαριασμού</button>
+                    <hr />
+
+                    <div class="justify-content-center">
+                        @using (Html.BeginForm("UpdateUser", "Users", FormMethod.Post, new { @class = "form-group", id = "UpdateUser", enctype = "multipart/form-data" }))
+                        {
+                            <div class="row">
+                                <div class="col-6">
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.FirstName, "Όνομα")
+                                        @Html.TextBoxFor(m => m.User.FirstName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.User.FirstName)
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.LastName, "Επίθετο")
+                                        @Html.TextBoxFor(m => m.User.LastName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.User.LastName)
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.PhoneNumber, "Τηλέφωνο")
+                                        @Html.TextBoxFor(m => m.User.PhoneNumber, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.User.PhoneNumber)
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.DateOfBirth, "Ημ. Γέννησης")
+                                        @Html.TextBoxFor(m => m.User.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", @value = Model.GetDate(Model.User.DateOfBirth.Value) })
+                                        @Html.ValidationMessageFor(m => m.User.DateOfBirth)
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Files, "Φωτογραφίες")
+                                        @Html.TextBoxFor(m => m.Files, new { @class = "form-control p-1", type = "file", @multiple = "multiple" })
+                                        @Html.ValidationMessageFor(m => m.Files)
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.Smoker, "Καπνιστής/ρια")
+                                        <div class="custom-radio">
+                                            @Html.LabelFor(m => m.User.Smoker, "Ναι")
+                                            @Html.RadioButtonFor(m => m.User.Smoker, "Yes", new { @class = "" })
+                                            @Html.LabelFor(m => m.User.Smoker, "Οχι", new { @class = "ml-2" })
+                                            @Html.RadioButtonFor(m => m.User.Smoker, "No", new { @class = "" })
+                                            @Html.ValidationMessageFor(m => m.User.Smoker)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.Gender, "Φύλο")
+                                        <div class="custom-radio">
+                                            @Html.LabelFor(m => m.User.Gender, "Άνδρας")
+                                            @Html.RadioButtonFor(m => m.User.Gender, "Male", new { @class = "" })
+                                            @Html.LabelFor(m => m.User.Gender, "Γυναίκα", new { @class = "ml-2" })
+                                            @Html.RadioButtonFor(m => m.User.Gender, "Female", new { @class = "" })
+                                            @Html.LabelFor(m => m.User.Gender, "Απροσδιόριστο", new { @class = "ml-2" })
+                                            @Html.RadioButtonFor(m => m.User.Gender, "Other", new { @class = "" })
+                                            @Html.ValidationMessageFor(m => m.User.Gender)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.Pets, "Κατοικίδια")
+                                        <div class="custom-radio">
+                                            @Html.LabelFor(m => m.User.Pets, "Ναι")
+                                            @Html.RadioButtonFor(m => m.User.Pets, "Yes", new { @class = "" })
+                                            @Html.LabelFor(m => m.User.Pets, "Οχι", new { @class = "ml-2" })
+                                            @Html.RadioButtonFor(m => m.User.Pets, "No", new { @class = "" })
+                                            @Html.ValidationMessageFor(m => m.User.Pets)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.User.UserDescription, "Πληροφορίες")
+                                        @Html.TextAreaFor(m => m.User.UserDescription, new { @class = "form-control", placeholder = "π.χ. Είμαι μουσικός" })
+                                        @Html.ValidationMessageFor(m => m.User.UserDescription)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+
+                </div>
+                <div class="tab-pane fade mt-4" id="premium">
+                    <div class="row">
+                        <div class="col-6 text-center" style="border-right:1px solid black">
+                            @*<i class="fas fa-trophy" style="font-size:200px;color:silver"></i>*@
+                            <img class="img-fluid" src="~/Images/trophies/cup(1).png" />
+                            <p class="font-weight-bold">
+                                SILVER MEMBER
+                            </p>
+                            <h4 class="font-weight-bold font-italic">5&euro; / μήνα</h4>
+                            <ul class="text-left">
+                                <li>
+                                    Μέχρι 3 αγγελίες!
+                                </li>
+                                <li>
+                                    24/7 υποστήριξη!
+                                </li>
+                                <li>
+                                    Έγκριση αγγελιών εντός 48 ωρών!
+                                </li>
+                                <li>
+                                    Πρόσβαση σε όλες τις πληροφορίες των χρηστών!
+                                </li>
+                            </ul>
+                            <br />
+                            <a class="btn btn-primary text-white w-75" href="@(Url.Action("Payment","Payments", new { price="5" }))">Αγορά <i class="fas fa-shopping-cart"></i> </a>
+                        </div>
+                        <div class="col-6 text-center">
+                            @*<i class="fas fa-trophy" style="font-size:200px;color:gold"></i>*@
+                            <img class="img-fluid" src="~/Images/trophies/cup(2).png" height="200px" />
+                            <p class="font-weight-bold">
+                                GOLD MEMBER
+                            </p>
+                            <h4 class="font-weight-bold font-italic">8&euro; / μήνα</h4>
+                            <ul class="text-left">
+                                <li>
+                                    Live chat με τους χρήστες που επιθυμείς!
+                                </li>
+                                <li>
+                                    Απεριόριστες αγγελίες!
+                                </li>
+                                <li>
+                                    24/7 υποστήριξη!
+                                </li>
+                                <li>
+                                    Έγκριση αγγελιών εντός 24ώρου!
+                                </li>
+                                <li>
+                                    Πρόσβαση σε όλες τις πληροφορίες των χρηστών!
+                                </li>
+                            </ul>
+                            <a class="btn btn-primary text-white w-75" href="@(Url.Action("Payment","Payments", new { price="8" }))">Αγορά <i class="fas fa-shopping-cart"></i> </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+@section styles{
+    <style>
+
+        .form-group > label {
+            font-weight: bold;
+        }
+
+        .badge {
+            font-weight: 400;
+            font-size: 15px;
+        }
+
+        .nav-tabs > .nav-item > .nav-link {
+            color: #f5f5f5;
+            text-decoration: none;
+            background-color: #0d5c57;
+        }
+
+        .nav-item > a:hover {
+            color: #f9ff05 !important;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #0d5c57;
+            color: #f9ff05;
+            border-color: #f1ce0f #fff709 #e2db07;
+            box-shadow: 2px 2px 6px black;
+        }
+
+        .swal-button {
+            background-color: #073a37;
+            border-color: none;
+        }
+
+            .swal-button:not([disabled]):hover {
+                background-color: #05433f;
+                border-color: none;
+                color: yellow;
+            }
+
+
+        @@media screen and (max-height: 768px) {
+            .card-img-top {
+                height: 250px;
+            }
+
+            #mainProfile {
+                height: 100vh !important;
+            }
+
+            .card {
+                height: 250px;
+            }
+
+            .card-img-top {
+                height: 150px;
+            }
+        }
+    </style>
+}
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            $("#userSave").click(function () {
+                $("#UpdateUser").submit();
+            });
+
+            $('.collapse').collapse()
+
+            $(document).on("click", ".mainButton", function () {
+                var temp = $(this).attr("data-photo-id");
+
+                $.post("/api/UserPhotos", { photoId: temp })
+                    .done(function (res) {
+                        $(".profile").attr('src', res.Url)
+                    })
+                    .fail(function () {
+                        alert("Υπήρξε κάποιο πρόβλημα. Δοκίμασε Πάλι σε λίγο.");
+                    });
+            });
+
+            $(document).on("click", ".deleteButton", function () {
+                var temp = $(this).attr("data-photo-id");
+                var div = $(`#${temp}`);
+
+                swal({
+                      title: "Είσαι σίγουρος/η;",
+                      text: "Αν την διαγράψεις, δεν είναι εφικτό να την επανακτήσεις!",
+                      icon: "warning",
+                      buttons: true,
+                      dangerMode: true,
+                })
+                 .then((isConfirm) => {
+                      if (isConfirm) {
+                         $.ajax({
+                    method: 'DELETE',
+                    url:"/api/userphotos/" + temp
+                })
+                    .done(function (res) {
+
+                        swal({
+                           icon: "success",
+                           text: "Η φωτογραφία διαγράφτηκε!",
+                        });
+                        div.hide('slow', function () {
+                            div.remove();
+                        })
+
+                })
+                .fail(function () {
+                       swal({
+                           icon: "error",
+                           text: "Δεν μπορείς να σβήσεις την βασική σου φωτογραφία!",
+                       });
+                });
+
+                      } else {
+                        swal("Η φωτογραφία σου δεν επηρεάστηκε.");
+                      }
+               });
+
+            });
+
+               $(document).on("click", ".deleteHouseImgButton", function () {
+                var temp = $(this).attr("data-house-id");
+                var div = $(`#${temp}`);
+
+                swal({
+                      title: "Είσαι σίγουρος/η;",
+                      icon: "warning",
+                      buttons: true,
+                      dangerMode: true,
+                })
+                 .then((isConfirm) => {
+                      if (isConfirm) {
+                         $.ajax({
+                    method: 'DELETE',
+                    url:"/api/ads/" + temp
+                })
+                    .done(function (res) {
+                        swal({
+                           icon: "success",
+                           text: "Η αγγελία διαγράφτηκε!",
+                        });
+                        div.hide('slow', function () {
+                            div.remove();
+                        })
+
+                })
+                .fail(function () {
+                       swal({
+                           icon: "error",
+                           text: "Κάτι πήγε στραβά. Κάνε ανανέωση το παράθυρο και ξαναπροσπάθησε.",
+                       });
+                });
+
+                      } else {
+                        swal("Η αγγελία σου δεν επηρεάστηκε.");
+                      }
+               });
+
+            });
+
+            var data = "@(TempData["Message"].ToString())"
+
+            if (data != "") {
+                swal({
+                  title: "Η καταχώρηση έγινε επιτυχώς!",
+                  text: "Αναμένεται η έγκριση από τον διαχειριστή!",
+                  icon: "success",
+                  button: "Συνέχεια",
+                });
+            }
+
+
+
+
+                        $("#sendMessage").click(function () {
+        var message = $('#chatTextArea').val();
+        var senderId = "@User.Identity.GetUserId()";
+        var receiverName = $('#receiver').val();
+        var title = $('#title').val();
+
+        $.post("/api/messages", { message: message, senderId: senderId, receiverId: receiverName, subject: title })
+            .done(function () {
+                  swal({
+                  title: "Το μήνυμα απεστάλη!",
+                  icon: "success",
+                  button: "Συνέχεια",
+                  });
+
+                $('#chatTextArea').val('')
+                $('#receiver').val('')
+                $('#title').val('')
+            })
+            .fail(function (error) {
+                      swal({
+                  title: "Δεν υπάρχει χρήστης με αυτό το ψευδώνυμο!",
+                  icon: "warning",
+                  button: "Συνέχεια",
+                });
+            })
+
+
+        });
+
+
+        });
+
+
+    </script>
+
+
+}
